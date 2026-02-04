@@ -8,12 +8,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-const LIMIT = 100
-const WINDOW = time.Minute
 
-func RateLimiter() gin.HandlerFunc {
+// Make middleware accept custom limits
+func RateLimiter(limit int, windowSeconds int) gin.HandlerFunc {
+	window := time.Duration(windowSeconds) * time.Second
+
 	return func(c *gin.Context) {
-
 		ip := c.ClientIP()
 		key := "rate:" + ip
 
@@ -25,10 +25,10 @@ func RateLimiter() gin.HandlerFunc {
 		}
 
 		if count == 1 {
-			config.RedisClient.Expire(config.Ctx, key, WINDOW)
+			config.RedisClient.Expire(config.Ctx, key, window)
 		}
 
-		if count > LIMIT {
+		if count > int64(limit) {
 			c.JSON(http.StatusTooManyRequests, gin.H{
 				"error": "Too many requests",
 			})
