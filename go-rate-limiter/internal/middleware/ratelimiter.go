@@ -17,7 +17,7 @@ func RateLimiter(limit int, windowSeconds int) gin.HandlerFunc {
 		ip := c.ClientIP()
 		key := "rate:" + ip
 
-		count, err := config.RedisClient.Incr(config.Ctx, key).Result()
+		count, err := config.RDB.Incr(config.Ctx, key).Result()
 		if err != nil {
 			c.JSON(500, gin.H{"error": "Redis error"})
 			c.Abort()
@@ -25,7 +25,7 @@ func RateLimiter(limit int, windowSeconds int) gin.HandlerFunc {
 		}
 
 		if count == 1 {
-			config.RedisClient.Expire(config.Ctx, key, window)
+			config.RDB.Expire(config.Ctx, key, window)
 		}
 
 		if count > int64(limit) {

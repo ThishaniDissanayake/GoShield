@@ -17,17 +17,20 @@ func main() {
 	godotenv.Load()
 
 	rateLimit, windowSeconds := 100, 60
+
 	if v := os.Getenv("RATE_LIMIT"); v != "" {
 		if x, err := strconv.Atoi(v); err == nil {
 			rateLimit = x
 		}
 	}
+
 	if v := os.Getenv("WINDOW_SECONDS"); v != "" {
 		if x, err := strconv.Atoi(v); err == nil {
 			windowSeconds = x
 		}
 	}
 
+	// Connect Redis
 	config.ConnectRedis()
 
 	r := gin.Default()

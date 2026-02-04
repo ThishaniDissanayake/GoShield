@@ -3,24 +3,28 @@ package config
 import (
 	"context"
 	"log"
+	"os"
 
 	"github.com/redis/go-redis/v9"
 )
 
 var Ctx = context.Background()
-var RedisClient *redis.Client
+var RDB *redis.Client
 
 func ConnectRedis() {
-	RedisClient = redis.NewClient(&redis.Options{
-		Addr:     "127.0.0.1:6379",
-		Password: "",
-		DB:       0,
-	})
-
-	_, err := RedisClient.Ping(Ctx).Result()
-	if err != nil {
-		log.Fatal("Redis connection failed")
+	addr := os.Getenv("REDIS_ADDR")
+	if addr == "" {
+		addr = "redis:6379" // docker service name
 	}
 
-	log.Println("Redis connected")
+	RDB = redis.NewClient(&redis.Options{
+		Addr: addr,
+	})
+
+	_, err := RDB.Ping(Ctx).Result()
+	if err != nil {
+		log.Fatalf("❌ Redis connection failed: %v", err)
+	}
+
+	log.Println("✅ Connected to Redis")
 }
