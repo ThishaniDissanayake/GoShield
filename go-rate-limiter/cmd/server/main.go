@@ -1,9 +1,9 @@
 package main
 
 import (
-	"go-rate-limiter/internal/config"
-	"go-rate-limiter/internal/handlers"
-	"go-rate-limiter/internal/middleware"
+	"github.com/ThishaniDissanayake/GoShield/go-rate-limiter/internal/config"
+	"github.com/ThishaniDissanayake/GoShield/go-rate-limiter/internal/handlers"
+	"github.com/ThishaniDissanayake/GoShield/go-rate-limiter/internal/middleware"
 
 	"github.com/gin-gonic/gin"
 )

@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"time"
 
-	"go-rate-limiter/internal/config"
+	"github.com/ThishaniDissanayake/GoShield/go-rate-limiter/internal/config"
 	"github.com/gin-gonic/gin"
 )
 
