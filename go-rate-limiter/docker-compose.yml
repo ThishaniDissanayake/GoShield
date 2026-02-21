@@ -1,6 +1,9 @@
 services:
+  # ── Middleware mode (original server) ─────────────────────────
   api:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: gosheild-api
     ports:
       - "8080:8080"
@@ -11,6 +14,31 @@ services:
     depends_on:
       - redis
 
+  # ── Gateway / Reverse-proxy mode ─────────────────────────────
+  gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile.gateway
+    container_name: gosheild-gateway
+    ports:
+      - "9090:8080"
+    environment:
+      - UPSTREAM_URL=http://upstream:80
+      - RATE_LIMIT=10
+      - WINDOW_SECONDS=60
+      - REDIS_ADDR=redis:6379
+    depends_on:
+      - redis
+      - upstream
+
+  # ── Example upstream (httpbin) ───────────────────────────────
+  upstream:
+    image: kennethreitz/httpbin
+    container_name: gosheild-upstream
+    ports:
+      - "9000:80"
+
+  # ── Redis ────────────────────────────────────────────────────
   redis:
     image: redis:7-alpine
     container_name: gosheild-redis
