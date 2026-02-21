@@ -38,6 +38,8 @@ func main() {
 		}
 	}
 
+	mode := os.Getenv("RATE_LIMIT_MODE") // "sliding" (default) or "fixed"
+
 	// ── Redis ────────────────────────────────────────────────────
 	config.ConnectRedis()
 
@@ -53,7 +55,7 @@ func main() {
 	// All other routes: rate-limit first, then forward to upstream.
 	// NoRoute catches all requests that don't match registered routes.
 	r.NoRoute(
-		middleware.RateLimiter(rateLimit, windowSeconds),
+		middleware.RateLimiter(rateLimit, windowSeconds, mode),
 		gateway.ProxyHandler(proxy),
 	)
 

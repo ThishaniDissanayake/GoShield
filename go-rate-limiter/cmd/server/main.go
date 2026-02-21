@@ -30,11 +30,13 @@ func main() {
 		}
 	}
 
+	mode := os.Getenv("RATE_LIMIT_MODE") // "sliding" (default) or "fixed"
+
 	// Connect Redis
 	config.ConnectRedis()
 
 	r := gin.Default()
-	r.Use(middleware.RateLimiter(rateLimit, windowSeconds))
+	r.Use(middleware.RateLimiter(rateLimit, windowSeconds, mode))
 
 	r.GET("/health", handlers.HealthCheck)
 	r.Run(":8080")
