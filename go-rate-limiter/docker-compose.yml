@@ -10,6 +10,7 @@ services:
     environment:
       - RATE_LIMIT=100
       - WINDOW_SECONDS=60
+      - RATE_LIMIT_MODE=sliding
       - REDIS_ADDR=redis:6379
     depends_on:
       - redis
@@ -25,7 +26,8 @@ services:
     environment:
       - UPSTREAM_URL=http://upstream:80
       - RATE_LIMIT=10
-      - WINDOW_SECONDS=60
+      - WINDOW_SECONDS=30
+      - RATE_LIMIT_MODE=sliding
       - REDIS_ADDR=redis:6379
     depends_on:
       - redis
